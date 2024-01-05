@@ -1,6 +1,6 @@
 // Need to use actual GNU gcc to compile this code as Apple's
 // alias to gcc, clang, does not support OpenMP
-// g++-13 -fopenmp -std=c++11 -Wall -Wextra advDif.cpp -o advDif
+// g++-13 -fopenmp -std=c++11 -Wall -Wextra NSsolver.cpp -o NSsolver
 
 #include "NSsolver.hh"
 #include <iostream>
