@@ -7,6 +7,9 @@
 #include <cmath>
 #include <omp.h>
 
+using namespace std;
+
+// Struct used to keep track of velocity in each cell
 struct velStruct{
   double ux;
   double uy;
@@ -14,7 +17,7 @@ struct velStruct{
 };
 
 double LL, WW, HH; // Length of container sides, cm
-double dx; // Grid spacing, cm
+double dx,dt; // Grid spacing (cm), Time stepping (seconds)
 double T; // Final time, seconds
 int L, W, H; // Number of cells in each direction
 int N; // Number of circulation cells
@@ -24,7 +27,7 @@ double mu = 1; // viscosity
 
 double *** C; // Gas concentration c in each cell, g per cm^3
 double *** P; // Fluid pressure in each cell, Newtons per cm^2 ?
-struct *** velStruct U; // Velocity components in each cell, cm per second 
+velStruct *** U; // Velocity components in each cell, cm per second 
 
 int MAX_THREADS = 10; // Set for OpenMP, my 2023 M2 Pro has 10 cores, change
                       // when running on other machines with more or less cores
@@ -85,8 +88,9 @@ void start(){
     //process3DArray(uz);
 
     // We'll take a time step that's just smaller than the CFL condition
-    double dt = CFL(dx,ux,uy,uz);
+    //double dt = CFL(dx,ux,uy,uz);
     
+
     int steps = std::floor(T / dt) + 1;
     fprintf(stderr,"Final time: %f, dt: %f, Images: %d, Length pixels: %d, Width pixels: %d, Height pixels: %d\n", T, dt, steps, L-2, W-2, H-2);
     
@@ -97,28 +101,15 @@ void start(){
     }
 }
 
-double CFL(double dx, double ***ux, double ***uy, double *** uz)
-{
-    
-    // Need to find largest flow velocity among all the cells
-    double maxU = 0;
-    double U;
-    for (int i = 0; i < L; i++){
-        for (int j = 0; j < W; j++){
-            for (int k = 0; k < H; k++){
-                U = std::sqrt(ux[i][j][k]*ux[i][j][k] +  uy[i][j][k]*uy[i][j][k] + uz[i][j][k]*uz[i][j][k]);
-                if (U > maxU){
-                    maxU = U;
-                }
-            }
-        }
-    }
-    // Returning the smaller CFL condition between advection and diffusion
-    // For small diffusion, advection CFL is normally much smaller
-    return .9*std::min(dx/maxU, (dx*dx)/(2*D));
+void step(){
+    return;
 }
 
-std::array<double, 3> convert(int i, int j, int k, double dx){
+void enforceBoundary(){
+    return;
+}
+
+array<double, 3> convert(int i, int j, int k, double dx){
     std::array<double, 3> coord;
     double x = (double(i) - double(L)*.5) * dx + (.5)*dx;
     double y = (double(j) - double(W)*.5) * dx + (.5)*dx;
@@ -133,17 +124,17 @@ bool isBoundary(int i, int j, int k)
     return (i == 0 || i == L - 1 || j == 0 || j == W - 1 || k == 0 || k == H - 1);
 }
 
-double initializeC(double *** c, double dx){
+void initializeC(){
     for (int i = 0; i < L; i++){
         for (int j = 0; j < W; j++){
             for (int k = 0; k < H; k++){
-                c[i][j][k] = 1; // Dummy
+                C[i][j][k] = 1; // Dummy
             }
         }
     }
 }
 
-double initializeP(int i, int j, int k, double dx){
+void initializeP(){
     for (int i = 0; i < L; i++){
         for (int j = 0; j < W; j++){
             for (int k = 0; k < H; k++){
@@ -164,14 +155,15 @@ double ***allocate3DArray(){
     return arr;
 }
 
-velStruct ***allocate3DVelocity(){
+struct velStruct ***allocate3DVelocity(){
     velStruct ***arr = new velStruct **[L];
     for (int i = 0; i < L; i++){        
         arr[i] = new velStruct *[W];
         for(int j = 0; j < W; j++){
             arr[i][j] = new velStruct[H];
         }
-    }    
+    }
+    return arr;    
 }  
 
 void deallocate3DArray(double ***arr){
