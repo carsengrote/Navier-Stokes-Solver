@@ -1,6 +1,6 @@
 // Need to use actual GNU gcc to compile this code as Apple's
 // alias to gcc, clang, does not support OpenMP
-// g++-13 -fopenmp -std=c++11 -Wall -Wextra NSsolver.cpp -o NSsolver
+// g++-13 -fopenmp -Wall -Wextra NSsolver.cpp -o NSsolver
 
 #include "NSsolver.hh"
 #include <cstdio>
@@ -42,11 +42,10 @@ void printVertical(double *** c){
        printf("\n");
    }
    printf("\n");
-
 }
 
-int main(int argc,char* argv[])
-{
+int main(int argc, char* argv[]){
+
     omp_set_num_threads(MAX_THREADS);
     
     if (argc != 6){
@@ -90,7 +89,6 @@ void start(){
     // We'll take a time step that's just smaller than the CFL condition
     //double dt = CFL(dx,ux,uy,uz);
     
-
     int steps = floor(T / dt) + 1;
     fprintf(stderr,"Final time: %f, dt: %f, Images: %d, Length pixels: %d, Width pixels: %d, Height pixels: %d\n", T, dt, steps, L-2, W-2, H-2);
     
@@ -110,7 +108,7 @@ void enforceBoundary(){
 }
 
 array<double, 3> convert(int i, int j, int k, double dx){
-    std::array<double, 3> coord;
+    array<double, 3> coord;
     double x = (double(i) - double(L)*.5) * dx + (.5)*dx;
     double y = (double(j) - double(W)*.5) * dx + (.5)*dx;
     double z = (double(k) - (double(H)- 1)) * dx + (.5)*dx;
