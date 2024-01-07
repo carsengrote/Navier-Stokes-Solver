@@ -3,7 +3,7 @@
 // g++-13 -fopenmp -std=c++11 -Wall -Wextra NSsolver.cpp -o NSsolver
 
 #include "NSsolver.hh"
-#include <iostream>
+#include <cstdio>
 #include <cmath>
 #include <omp.h>
 
@@ -181,10 +181,10 @@ void process3DArray(double ***arr){
     for (int k = 0; k < H; k++){
         for (int j = 0; j < W; j++){
             for (int i = 0; i < L; i++){
-                std::cout << arr[i][j][k] << " ";
+                printf("%f ", arr[i][j][k]);
             }
-            std::cout << std::endl;
+            printf("\n");
         }
-        std::cout << std::endl;
+        printf("\n");
     }
 }
