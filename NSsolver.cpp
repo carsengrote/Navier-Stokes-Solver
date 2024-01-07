@@ -91,7 +91,7 @@ void start(){
     //double dt = CFL(dx,ux,uy,uz);
     
 
-    int steps = std::floor(T / dt) + 1;
+    int steps = floor(T / dt) + 1;
     fprintf(stderr,"Final time: %f, dt: %f, Images: %d, Length pixels: %d, Width pixels: %d, Height pixels: %d\n", T, dt, steps, L-2, W-2, H-2);
     
     double t_total = 0;
