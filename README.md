@@ -1,2 +1,2 @@
 # Navier-Stokes-Solver
-Solving Navier Stokes in 3D for a supersaturated fluid.
+Solving Navier Stokes in 2D for a supersaturated fluid.
